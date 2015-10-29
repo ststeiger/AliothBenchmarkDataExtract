@@ -1,0 +1,67 @@
+﻿
+
+http://c3js.org/examples.html
+http://morrisjs.github.io/morris.js/
+http://fastly.github.io/epoch/real-time/#bar
+https://github.com/fasouto/awesome-dataviz/blob/master/README.md#javascript-tools
+
+
+
+
+SELECT 
+	 UWVB_Jahr
+	,UWVB_Bemerkung
+	,UWVB_Wert	
+	,UWVB_Kosten
+	,UWVB_DatumVon
+	,UWVB_DatumBis
+FROM T_UW_Verbrauch 
+WHERE UWVB_Jahr <> 0
+
+ORDER BY UWVB_Jahr 
+
+
+      SELECT 2012 AS Jahr, 'Januar' AS Monat, 1 AS Verbrauch 
+UNION SELECT 2012 AS Jahr, 'Februar' AS Monat, 2 AS Verbrauch 
+UNION SELECT 2012 AS Jahr, 'März' AS Monat, 3 AS Verbrauch 
+
+
+
+SELECT BP_Jahr, BP_Bezeichnung, BP_Budget FROM T_UPS_BudgetPositionen 
+order by BP_Jahr 
+
+
+
+SELECT BP_Jahr, SUM(BP_Budget) AS bud FROM T_UPS_BudgetPositionen 
+group by BP_Jahr
+order by BP_Jahr 
+
+
+
+
+-- MS: SELECT LEN(N'äöü'), DATALENGTH(N'äöü'), DATALENGTH('äöü') ==> 3,6,3
+-- PG: SELECT length(string), octet_length(string)
+
+-- MySQL
+-- length() and char_length()?
+-- LENGTH() returns the length of the string measured in bytes. 
+-- CHAR_LENGTH() returns the length of the string measured in characters.
+-- select length(_utf8 '€'), char_length(_utf8 '€')
+-- --> 3, 1 
+
+
+
+http://stackoverflow.com/questions/8307743/charting-library-for-google-go
+https://github.com/vdobler/chart
+https://code.google.com/p/plotinum/
+https://github.com/mindreframer/golang-stuff/tree/master/github.com
+
+
+
+
+
+http://teamarin.net/2014/10/30/8-steps-get-site-ready-ipv6/
+
+
+http://ipv6-test.com/validate.php
+http://www.internetsociety.org/deploy360/blog/2012/02/googles-public-dns-works-with-ipv6-can-help-in-your-migration/
