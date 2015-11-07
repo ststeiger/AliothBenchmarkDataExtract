@@ -1,11 +1,17 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
+
 namespace BenchmarkDataExtract
 {
+
+
     static class Program
     {
+
+
         /// <summary>
         /// Der Haupteinstiegspunkt für die Anwendung.
         /// </summary>
@@ -16,5 +22,9 @@ namespace BenchmarkDataExtract
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
         }
+
+
     }
+
+
 }

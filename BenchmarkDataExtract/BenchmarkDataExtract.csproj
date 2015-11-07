@@ -66,6 +66,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="Libs\benchmarksgame-sourcecode.zip" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -75,19 +76,17 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="SQL\pg_insert.sql" />
-    <None Include="SQL\T_Benchmark_InsertConvert.sql" />
-    <None Include="SQL\alterTable.sql" />
+    <None Include="SQL\01_T_Benchmark_InsertConvert.sql" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Libs\HtmlAgilityPack.dll" />
     <Content Include="Libs\Newtonsoft.Json.dll" />
     <Content Include="ChartLibs.txt" />
-    <Content Include="SQL\bench1.sql" />
-    <Content Include="SQL\INSERT_t_benchmark.sql" />
-    <Content Include="SQL\Bench2_Insert.sql" />
-    <Content Include="SQL\bench_select.sql" />
+    <Content Include="SQL\import\01_Create_Table.sql" />
+    <Content Include="SQL\import\Group_Insert.sql" />
+    <Content Include="SQL\02_bench_select.sql" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

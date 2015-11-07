@@ -28,49 +28,54 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnFetch = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnInsert = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
-            // button1
+            // btnFetch
             // 
-            this.button1.Location = new System.Drawing.Point(13, 517);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnFetch.Location = new System.Drawing.Point(17, 636);
+            this.btnFetch.Margin = new System.Windows.Forms.Padding(4);
+            this.btnFetch.Name = "btnFetch";
+            this.btnFetch.Size = new System.Drawing.Size(100, 28);
+            this.btnFetch.TabIndex = 0;
+            this.btnFetch.Text = "Fetch Data";
+            this.btnFetch.UseVisualStyleBackColor = true;
+            this.btnFetch.Click += new System.EventHandler(this.btnFetch_Click);
             // 
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(13, 13);
+            this.dataGridView1.Location = new System.Drawing.Point(17, 16);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(4);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(853, 487);
+            this.dataGridView1.Size = new System.Drawing.Size(1137, 599);
             this.dataGridView1.TabIndex = 1;
             // 
-            // button2
+            // btnInsert
             // 
-            this.button2.Location = new System.Drawing.Point(113, 517);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 2;
-            this.button2.Text = "button2";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.btnInsert.Location = new System.Drawing.Point(151, 636);
+            this.btnInsert.Margin = new System.Windows.Forms.Padding(4);
+            this.btnInsert.Name = "btnInsert";
+            this.btnInsert.Size = new System.Drawing.Size(100, 28);
+            this.btnInsert.TabIndex = 2;
+            this.btnInsert.Text = "Insert Data";
+            this.btnInsert.UseVisualStyleBackColor = true;
+            this.btnInsert.Click += new System.EventHandler(this.btnInsert_Click);
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(878, 552);
-            this.Controls.Add(this.button2);
+            this.ClientSize = new System.Drawing.Size(1171, 679);
+            this.Controls.Add(this.btnInsert);
             this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnFetch);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
@@ -79,9 +84,9 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnFetch;
         private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnInsert;
     }
 }
 

@@ -24,14 +24,14 @@ namespace BenchmarkDataExtract
 
 
 
-        private void button1_Click(object sender, System.EventArgs e)
+        private void btnFetch_Click(object sender, System.EventArgs e)
         {
             System.Data.DataTable dt = GetAllBenchmarks();
             this.dataGridView1.DataSource = dt;
-        } // End Sub button1_Click 
+        } // End Sub btnFetch_Click 
 
 
-        private void button2_Click(object sender, System.EventArgs e)
+        private void btnInsert_Click(object sender, System.EventArgs e)
         {
             Insert_Benchmarks();
         } // End Sub button2_Click 
@@ -56,7 +56,6 @@ namespace BenchmarkDataExtract
                 dr = dt.NewRow();
                 // System.Console.WriteLine(link);
                 dr["Name"] = System.Web.HttpUtility.HtmlDecode(link.InnerText);
-
                 dr["Url"] = link.Attributes["href"].Value;
 
                 dt.Rows.Add(dr);
@@ -73,26 +72,30 @@ namespace BenchmarkDataExtract
 
         private void Insert_Benchmarks()
         {
-            System.Data.DataTable dtBenchs = GetAllBenchmarks();
+            ExecuteNonQuery("DELETE FROM __Bench");
 
-            int count = -1;
-            foreach (System.Data.DataRow dr in dtBenchs.Rows)
+            using (System.Data.DataTable dtBenchs = GetAllBenchmarks())
             {
-                count++;
-                string path = System.Convert.ToString(dr["Url"]);
-                System.Data.DataTable dt = GetData(path);
 
-                System.Data.DataView dv = dt.DefaultView;
-                //dv.Sort = "Name ASC";
-                System.Data.DataTable sortedDT = dv.ToTable();
-                this.dataGridView1.DataSource = sortedDT;
+                int count = -1;
+                foreach (System.Data.DataRow dr in dtBenchs.Rows)
+                {
+                    count++;
+                    string path = System.Convert.ToString(dr["Url"]);
+                    System.Data.DataTable dt = GetData(path);
+
+                    System.Data.DataView dv = dt.DefaultView;
+                    //dv.Sort = "Name ASC";
+                    System.Data.DataTable sortedDT = dv.ToTable();
+                    this.dataGridView1.DataSource = sortedDT;
 
 
-                string SQL = @"
+                    string SQL = @"
 INSERT INTO __Bench
 (
 	 bm_uid
-	,rubrique
+	,url
+    ,rubrique
 	,column_1
 	,secs
 	,KB
@@ -103,7 +106,8 @@ INSERT INTO __Bench
 VALUES
 ( 
 	 NEWID() --bm_uid -- uniqueidentifier
-	,@__Rubrique -- nvarchar(200)
+	,@__url -- nvarchar(1000)
+    ,@__Rubrique -- nvarchar(200)
 	,@__COLUMN_1 -- nvarchar(200)
 	,@__secs -- nvarchar(200)
 	,@__KB -- nvarchar(200)
@@ -113,32 +117,110 @@ VALUES
 )
 ;
 ";
-                System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                    System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
-                foreach (System.Data.DataRow drData in sortedDT.Rows)
-                {
-                    string str = SQL;
-
-                    foreach (System.Data.DataColumn dc in sortedDT.Columns)
+                    foreach (System.Data.DataRow drData in sortedDT.Rows)
                     {
-                        string strData = System.Convert.ToString(drData[dc.ColumnName]);
-                        strData = strData.Replace("'", "''");
-                        str = str.Replace("@__" + dc.ColumnName, "'" + strData + "'");
-                    } // Next dc 
+                        string str = SQL;
 
-                    sb.AppendLine(str);
-                    //System.Data.SqlClient.SqlCommand
-                } // Next drData 
+                        foreach (System.Data.DataColumn dc in sortedDT.Columns)
+                        {
+                            string strData = System.Convert.ToString(drData[dc.ColumnName]);
+                            strData = strData.Replace("'", "''");
+                            str = str.Replace("@__" + dc.ColumnName, "'" + strData + "'");
+                        } // Next dc 
 
-                string strExecute = sb.ToString();
-                sb.Length = 0;
-                sb = null;
+                        sb.AppendLine(str);
+                        //System.Data.SqlClient.SqlCommand
+                    } // Next drData 
 
-                // System.Console.WriteLine(strExecute);
-                ExecuteNonQuery(strExecute);
+                    string strExecute = sb.ToString();
+                    sb.Length = 0;
+                    sb = null;
 
-                // if(count == 1) break;
-            } // Next dr 
+                    // System.Console.WriteLine(strExecute);
+                    ExecuteNonQuery(strExecute);
+
+                    // if(count == 1) break;
+                } // Next dr 
+
+            }  // End Using dtBenchs
+
+
+            string sqlUpdate = @"
+UPDATE __Bench
+   SET failed = CASE WHEN KB = 'failed' THEN 'true' ELSE NULL END 
+      ,bad_output = CASE WHEN KB = 'Bad Output' THEN 'true' ELSE NULL END 
+      ,no_program = CASE WHEN secs = 'No programs' THEN 'true' ELSE NULL END 
+      ,no_programs = CASE WHEN secs = 'No program' THEN 'true' ELSE NULL END 
+;
+
+	
+UPDATE __Bench SET fail_army = COALESCE(failed, bad_output, no_program, no_programs, 'false'); 
+
+
+UPDATE __Bench SET secs = null WHERE secs IN ('', '?');
+UPDATE __Bench SET kb = null WHERE kb IN ('', '?');
+UPDATE __Bench SET gz = null WHERE gz IN ('', '?');
+UPDATE __Bench SET cpu = null WHERE cpu IN ('', '?');
+
+
+UPDATE __Bench SET fine = 'false';
+
+UPDATE __Bench 
+	SET fine = 'true' 
+WHERE (1=1) 
+AND NOT 
+(
+	   COALESCE(failed, 'false') = 'true' 
+	OR COALESCE(bad_output, 'false') = 'true' 
+	OR COALESCE(no_program, 'false') = 'true' 
+	OR COALESCE(no_programs, 'false') = 'true' 
+) 
+AND NOT 
+(
+	   secs	IS NULL 
+	OR kb IS NULL 
+	OR gz IS NULL 
+	OR cpu IS NULL 
+)
+;
+
+";
+
+            ExecuteNonQuery(sqlUpdate);
+
+
+            // SELECT * FROM __Bench WHERE (1=1) AND rubrique = 'fasta-redux' AND column_1 = 'Java' 
+            string sqlFixJunkData = @"
+UPDATE __Bench SET fine = 'false' 
+WHERE (1=1) 
+ 
+AND 
+(
+	(
+		rubrique = 'pidigits' AND column_1 = 'Java' AND url IN  ('./u64q/lua.html', './u64q/javascript.html')
+	)
+	OR 
+	(
+		rubrique = 'regex-dna' AND column_1 = 'Java' AND url IN  ('./u64q/pascal.html')
+	)
+	OR 
+	(
+		rubrique = 'reverse-complement' AND column_1 = 'Java' AND url IN  ('./u64q/lua.html')
+	)
+	OR
+	(
+		rubrique = 'mandelbrot' AND column_1 = 'Java' AND url IN  ('./u64q/javascript.html')
+	)
+	OR 
+	(
+		rubrique = 'fasta' AND column_1 = 'Java' AND url IN  ('./u64q/lua.html')
+	)
+)
+
+";
+            ExecuteNonQuery(sqlFixJunkData);
 
         } // End Sub Insert_Benchmarks
 
@@ -169,7 +251,7 @@ VALUES
                 
             } // End Using con
 
-        } // End Sub 
+        } // End Sub ExecuteNonQuery
 
 
         private System.Data.DataTable GetData(string path)
@@ -179,6 +261,7 @@ VALUES
             string baseURL = "http://benchmarksgame.alioth.debian.org/";
             string URL = baseURL + path;
 
+            dt.Columns.Add("url", typeof(string));
             dt.Columns.Add("Rubrique", typeof(string));
             System.Data.DataRow dr = null;
 
@@ -195,7 +278,7 @@ VALUES
             {
                 dr = dt.NewRow();
                 // System.Console.WriteLine(link);
-                
+
                 HtmlAgilityPack.HtmlNode a = link.SelectSingleNode("./th[@colspan=\"3\"]//a");
 
                 if (a != null)
@@ -242,9 +325,10 @@ VALUES
 
                     dr = dt.NewRow();
 
+                    dr["url"] = path;
                     dr["Rubrique"] = rubrique;
 
-                    int count = 0;
+                    int count = 1;
                     foreach (HtmlAgilityPack.HtmlNode td in tableData)
                     {
                         count++;
@@ -265,7 +349,7 @@ VALUES
                 // dr["Url"] = link.Attributes["href"].Value;
 
             } // Next link
-
+            
             return dt;
         } // End Function GetData
 
